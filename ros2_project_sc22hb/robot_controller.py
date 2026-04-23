@@ -27,7 +27,7 @@ class RobotController(Node):
     ROT_SPEED = 1.0
     FULL_ROTATION = 2.0 * math.pi + 0.2
     APPROACH_SPEED = 0.22
-    TARGET_AREA = 380000
+    TARGET_AREA = 520000
     DETECTION_THRESHOLD = 500
     CENTER_TOL = 0.1
 
