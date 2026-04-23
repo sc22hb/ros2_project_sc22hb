@@ -22,7 +22,7 @@ class RobotController(Node):
     APPROACH_BLUE = 'approach_blue'
     DONE = 'done'
 
-    WAYPOINT = (2.45, -7.72, 0.0)
+    WAYPOINT = (1.1209923028945923, -7.2677459716796875, 0.0)
 
     ROT_SPEED = 1.0
     FULL_ROTATION = 2.0 * math.pi + 0.2
