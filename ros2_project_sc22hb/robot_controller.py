@@ -27,7 +27,7 @@ class RobotController(Node):
     ROT_SPEED = 1.0
     FULL_ROTATION = 2.0 * math.pi + 0.2
     APPROACH_SPEED = 0.22
-    TARGET_AREA = 300000
+    TARGET_AREA = 380000
     DETECTION_THRESHOLD = 500
     CENTER_TOL = 0.1
 
@@ -97,7 +97,9 @@ class RobotController(Node):
         if area < self.DETECTION_THRESHOLD:
             return
 
-        self.colors_detected.add(name)
+        if name not in self.colors_detected:
+            self.colors_detected.add(name)
+            self.get_logger().info(f'{name} detected')
         x, y, w, h = cv2.boundingRect(contour)
         cv2.rectangle(display, (x, y), (x + w, y + h), colour, 2)
         cv2.putText(display, name.upper(), (x, y - 10),
@@ -155,7 +157,6 @@ class RobotController(Node):
             self.scan_start_time = time.time()
 
         if self.blue_found and len(self.colors_detected) == 3:
-            self.get_logger().info('All colours seen and blue is in view')
             self.stop()
             self.state = self.APPROACH_BLUE
             return
