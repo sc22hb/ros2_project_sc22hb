@@ -99,7 +99,7 @@ class RobotController(Node):
         if area < self.DETECTION_THRESHOLD:
             return
 
-        if name not in self.colors_detected:
+        if self.state != self.TRAVEL and name not in self.colors_detected:
             self.colors_detected.add(name)
             self.pause_until = time.time() + self.DETECTION_PAUSE
             self.stop()
