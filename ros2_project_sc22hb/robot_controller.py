@@ -30,6 +30,7 @@ class RobotController(Node):
     TARGET_AREA = 520000
     DETECTION_THRESHOLD = 500
     CENTER_TOL = 0.1
+    DETECTION_PAUSE = 1.0
 
     def __init__(self):
         super().__init__('robot_controller')
@@ -44,6 +45,7 @@ class RobotController(Node):
         self.blue_found = False
         self.blue_area = 0
         self.blue_center_offset = 0.0
+        self.pause_until = 0.0
 
         self.nav_sent = False
         self.scan_start_time = None
@@ -99,7 +101,9 @@ class RobotController(Node):
 
         if name not in self.colors_detected:
             self.colors_detected.add(name)
-            self.get_logger().info(f'{name} detected')
+            self.pause_until = time.time() + self.DETECTION_PAUSE
+            self.stop()
+            self.get_logger().info(f'{name.upper()} DETECTED')
         x, y, w, h = cv2.boundingRect(contour)
         cv2.rectangle(display, (x, y), (x + w, y + h), colour, 2)
         cv2.putText(display, name.upper(), (x, y - 10),
@@ -153,6 +157,10 @@ class RobotController(Node):
         self.state = self.SCAN
 
     def scan_step(self):
+        if time.time() < self.pause_until:
+            self.stop()
+            return
+
         if self.scan_start_time is None:
             self.scan_start_time = time.time()
 
@@ -177,6 +185,10 @@ class RobotController(Node):
             self.state = self.DONE
 
     def approach_blue_step(self):
+        if time.time() < self.pause_until:
+            self.stop()
+            return
+
         if not self.blue_found:
             twist = Twist()
             twist.angular.z = self.ROT_SPEED * 0.4
